@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-    baseURL: 'http://localhost:5000'
+    baseURL: 'https://code-master-1-8eak.onrender.com'
 });
 
 export const fetchProblems = () => API.get('/');
