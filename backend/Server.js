@@ -1,3 +1,4 @@
+// server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -18,32 +19,22 @@ const userRoutes = require('./routes/userRoutes');
 const app = express();
 
 // --- FRONTEND LINK CONFIGURATION ---
-// This tells the backend which website is allowed to send data to it.
 const FRONTEND_URL = 'https://code-master-4.onrender.com'; 
 
 // Middleware
 app.use(cors({
-    origin: [FRONTEND_URL, 'http://localhost:5173'], // Allows your live site and local testing
+    origin: [FRONTEND_URL, 'http://localhost:5173'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }));
 app.use(express.json());
 
-// Database Connection Logic
+// Database Connection Logic - Priority to Environment Variable
 const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/coding_platform';
 
 mongoose.connect(mongoURI)
     .then(() => console.log("MongoDB Connected Successfully"))
     .catch(err => console.error("MongoDB Connection Error:", err));
-
-// Health Check Route
-app.get('/test', (req, res) => {
-    res.json({ 
-        message: "Backend is running!", 
-        connectedToFrontend: FRONTEND_URL,
-        dbStatus: mongoose.connection.readyState === 1 ? "Connected" : "Disconnected" 
-    });
-});
 
 // Route Handlers
 app.use('/api/problems', problemRoutes);
