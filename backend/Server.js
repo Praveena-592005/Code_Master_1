@@ -17,16 +17,33 @@ const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
+// --- FRONTEND LINK CONFIGURATION ---
+// This tells the backend which website is allowed to send data to it.
+const FRONTEND_URL = 'https://code-master-4.onrender.com'; 
+
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: [FRONTEND_URL, 'http://localhost:5173'], // Allows your live site and local testing
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+}));
 app.use(express.json());
 
-// Database Connection Logic (Uses Render Environment Variable or Localhost)
+// Database Connection Logic
 const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/coding_platform';
 
 mongoose.connect(mongoURI)
     .then(() => console.log("MongoDB Connected Successfully"))
     .catch(err => console.error("MongoDB Connection Error:", err));
+
+// Health Check Route
+app.get('/test', (req, res) => {
+    res.json({ 
+        message: "Backend is running!", 
+        connectedToFrontend: FRONTEND_URL,
+        dbStatus: mongoose.connection.readyState === 1 ? "Connected" : "Disconnected" 
+    });
+});
 
 // Route Handlers
 app.use('/api/problems', problemRoutes);
@@ -37,10 +54,14 @@ app.use('/api/user', userRoutes);
 app.post('/api/auth/register', async (req, res) => {
     try {
         const { name, email, password } = req.body;
+        const existingUser = await User.findOne({ email });
+        if (existingUser) return res.status(400).json({ error: "Email already exists" });
+
         const user = await User.create({ name, email, password });
         res.status(201).json({ userId: user._id, name: user.name, email: user.email });
     } catch (err) {
-        res.status(400).json({ error: "Email already exists or invalid data" });
+        console.error("Registration Error:", err);
+        res.status(400).json({ error: "Registration failed." });
     }
 });
 
@@ -88,7 +109,6 @@ app.post('/api/execute', async (req, res) => {
 
         fs.writeFileSync(path.join(jobDir, fileName), script);
 
-        // Compilation Phase
         if (compileCmd) {
             try {
                 execSync(compileCmd, { stdio: 'pipe' });
@@ -109,7 +129,6 @@ app.post('/api/execute', async (req, res) => {
             }
         }
 
-        // Execution Phase (Test Cases)
         let allPassed = true;
         let resultData = null;
         let lastOutput = "";
@@ -138,7 +157,6 @@ app.post('/api/execute', async (req, res) => {
             resultData = { status: "Accepted", actualOutput: lastOutput };
         }
 
-        // Save Submission to Database
         if (isSubmit && userId) {
             if (resultData.status === "Accepted") {
                 const user = await User.findById(userId);
@@ -164,7 +182,6 @@ app.post('/api/execute', async (req, res) => {
             });
         }
 
-        // Cleanup
         fs.rmSync(jobDir, { recursive: true, force: true });
         res.json({ ...resultData, failedCase: failedCaseInfo });
 
@@ -174,6 +191,5 @@ app.post('/api/execute', async (req, res) => {
     }
 });
 
-// Port Logic for Cloud Deployment
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

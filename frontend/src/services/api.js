@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const API = axios.create({
-    // Use your live Render URL here
     baseURL: 'https://code-master-3.onrender.com'
 });
 
