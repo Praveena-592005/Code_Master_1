@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+// IMPORT the helpers from your api file
+import { fetchProblems, fetchUserSubmissions } from '../api'; 
 
 const Dashboard = () => {
     const [problems, setProblems] = useState([]);
@@ -13,18 +14,22 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const resProbs = await axios.get('http://localhost:5000/api/problems');
+                // FIXED: Use the helper instead of localhost:5000
+                const resProbs = await fetchProblems();
                 setProblems(resProbs.data);
                 setFilteredProblems(resProbs.data);
                 
                 const userId = localStorage.getItem('userId');
-                if (userId) {
+                if (userId && userId !== 'null') {
                     try {
-                        const resSubs = await axios.get(`http://localhost:5000/api/submissions/user/${userId}`);
+                        // FIXED: Use the helper instead of localhost:5000
+                        const resSubs = await fetchUserSubmissions(userId);
                         const data = resSubs.data || [];
                         const uniqueAcceptedIds = new Set();
+                        
                         data.forEach(sub => {
                             if (sub.status === 'Accepted') {
+                                // Extract the ID safely
                                 const id = sub.problemId?._id || sub.problemId;
                                 if (id) uniqueAcceptedIds.add(String(id));
                             }

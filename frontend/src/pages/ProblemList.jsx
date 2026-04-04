@@ -1,7 +1,7 @@
-// frontend/src/components/ProblemList.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+// IMPORT the helpers from your api file
+import { fetchProblems, fetchUserSubmissions } from '../api';
 
 const ProblemList = () => {
     const navigate = useNavigate();
@@ -16,19 +16,22 @@ const ProblemList = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // FIXED: Using API helpers instead of localhost:5000
                 const [probsRes, submissionsRes] = await Promise.all([
-                    axios.get('http://localhost:5000/api/problems'),
-                    userId ? axios.get(`http://localhost:5000/api/submissions/user/${userId}`) : { data: [] }
+                    fetchProblems(),
+                    userId && userId !== 'null' ? fetchUserSubmissions(userId) : Promise.resolve({ data: [] })
                 ]);
+
                 const acceptedIds = new Set();
                 if (submissionsRes.data) {
                     submissionsRes.data.forEach(sub => {
                         if (sub.status === 'Accepted') {
                             const pId = sub.problemId?._id || sub.problemId;
-                            acceptedIds.add(String(pId));
+                            if (pId) acceptedIds.add(String(pId));
                         }
                     });
                 }
+                
                 setProblems(probsRes.data);
                 setSolvedProblemIds(acceptedIds);
             } catch (err) {
@@ -105,7 +108,7 @@ const ProblemList = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredProblems.map((p) => {
+                            {filteredProblems.length > 0 ? filteredProblems.map((p) => {
                                 const isSolved = solvedProblemIds.has(String(p._id));
                                 return (
                                     <tr 
@@ -134,7 +137,11 @@ const ProblemList = () => {
                                         </td>
                                     </tr>
                                 );
-                            })}
+                            }) : (
+                                <tr>
+                                    <td colSpan="4" style={{ padding: '40px', textAlign: 'center', color: '#8c8c8c' }}>No problems found matching your criteria.</td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>

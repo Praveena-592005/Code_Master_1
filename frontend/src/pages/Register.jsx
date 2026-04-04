@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import { registerUser } from '../api';
 
 const Register = () => {
     const [formData, setFormData] = useState({ name: '', email: '', password: '' });
@@ -10,12 +10,13 @@ const Register = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/register', formData);
+            const res = await registerUser(formData);
             localStorage.setItem('userId', res.data.userId);
             localStorage.setItem('userName', res.data.name);
             localStorage.setItem('userEmail', res.data.email);
             navigate('/');
         } catch (err) {
+            console.error("Registration Error:", err);
             alert("Registration failed. Email might already exist.");
         }
     };
@@ -110,4 +111,3 @@ const Register = () => {
 };
 
 export default Register;
-

@@ -47,7 +47,7 @@ const ProblemPage = () => {
     const fetchHistory = async () => {
         if (!userId) return;
         try {
-            const res = await axios.get(`http://localhost:5000/api/submissions/user/${userId}`);
+            const res = await axios.get(`https://code-master-3.onrender.com/api/submissions/user/${userId}`);
             const history = res.data || [];
             
             const currentProblemSubmissions = history.filter(sub => {
@@ -73,9 +73,9 @@ const ProblemPage = () => {
         const loadData = async () => {
             try {
                 const [probRes, allProbsRes] = await Promise.all([
-                    axios.get(`http://localhost:5000/api/problems/${id}`),
-                    axios.get(`http://localhost:5000/api/problems`)
-                ]);
+    axios.get(`https://code-master-3.onrender.com/api/problems/${id}`),
+    axios.get(`https://code-master-3.onrender.com/api/problems`)
+]);
                 if (probRes.data) {
                     setProblem(probRes.data);
                     setAllProblems(allProbsRes.data);
@@ -132,7 +132,7 @@ const ProblemPage = () => {
         setActualOutput("");
         setConsoleTab("result");
         try {
-            const res = await axios.post('http://localhost:5000/api/execute', { 
+            const res = await axios.post('https://code-master-3.onrender.com/api/execute', { 
                 script: userCode, 
                 language: language,
                 problemId: id,

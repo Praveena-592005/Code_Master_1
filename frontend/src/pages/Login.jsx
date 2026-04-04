@@ -1,6 +1,7 @@
+// frontend/src/pages/Login.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import { loginUser } from '../api'; // Correctly importing the API helper
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -11,13 +12,18 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+            // Using the loginUser helper which points to your Render backend
+            const res = await loginUser({ email, password });
+            
             localStorage.setItem('userId', res.data.userId);
             localStorage.setItem('userName', res.data.name);
             localStorage.setItem('userEmail', res.data.email);
+            
+            // Redirect to home/dashboard after successful login
             navigate('/');
         } catch (err) {
-            alert("Invalid credentials");
+            console.error("Login Error:", err);
+            alert("Invalid credentials. Please check your email and password.");
         }
     };
 
