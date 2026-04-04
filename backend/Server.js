@@ -15,8 +15,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect('mongodb://127.0.0.1:27017/coding_platform')
-.then(() => console.log("MongoDB Connected"))
+// UPDATED: Use the MONGO_URI from Render environment variables, or local as fallback
+const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/coding_platform';
+
+mongoose.connect(mongoURI)
+.then(() => console.log("MongoDB Connected Successfully to Cloud"))
 .catch(err => console.error("MongoDB Connection Error:", err));
 
 app.use('/api/problems', problemRoutes);
@@ -142,5 +145,6 @@ res.status(500).json({ error: err.message });
 }
 });
 
-const PORT = 5000;
+// UPDATED: Use process.env.PORT to let Render decide the port
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
