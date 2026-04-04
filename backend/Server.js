@@ -4,6 +4,8 @@ const cors = require('cors');
 const { exec, execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config();
+
 const Problem = require('./models/Problem');
 const Submission = require('./models/Submission');
 const User = require('./models/User');
@@ -15,7 +17,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect('mongodb://127.0.0.1:27017/coding_platform')
+// 1. Updated Connection String for Deployment
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/coding_platform';
+
+mongoose.connect(MONGODB_URI)
 .then(() => console.log("MongoDB Connected"))
 .catch(err => console.error("MongoDB Connection Error:", err));
 
@@ -55,9 +60,11 @@ if (!fs.existsSync(jobDir)) fs.mkdirSync(jobDir, { recursive: true });
 let fileName = "";
 let compileCmd = "";
 let runCmd = "";
+
+// 2. Updated to use python3 (Common in Linux/Docker environments)
 if (language === 'python') {
 fileName = "script.py";
-runCmd = `python "${path.join(jobDir, fileName)}"`;
+runCmd = `python3 "${path.join(jobDir, fileName)}"`;
 } else if (language === 'java') {
 fileName = "Solution.java";
 compileCmd = `javac "${path.join(jobDir, fileName)}"`;
@@ -142,5 +149,6 @@ res.status(500).json({ error: err.message });
 }
 });
 
-const PORT = 5000;
+// 3. Dynamic Port for Deployment
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
