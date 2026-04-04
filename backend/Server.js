@@ -22,7 +22,7 @@ app.use(cors());
 app.use(express.json());
 
 // Database Connection Logic (Uses Render Environment Variable or Localhost)
-const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/coding_platform';
+const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/coding_platform';
 
 mongoose.connect(mongoURI)
     .then(() => console.log("MongoDB Connected Successfully"))
