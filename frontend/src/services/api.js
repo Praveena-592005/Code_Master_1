@@ -1,19 +1,21 @@
+// frontend/src/api.js
 import axios from 'axios';
 
 const API = axios.create({
-    baseURL: 'https://code-master-3.onrender.com'
+    // Adding /api here covers all your backend routes
+    baseURL: 'https://code-master-3.onrender.com/api' 
 });
 
-// Fetch all problems
-export const fetchProblems = () => API.get('/api/problems');
+// Fetch all problems - hits /api/problems
+export const fetchProblems = () => API.get('/problems');
 
-// Execute code (Run/Submit)
-export const executeCode = (data) => API.post('/api/execute', data);
+// Execute code - hits /api/execute
+export const executeCode = (data) => API.post('/execute', data);
 
-// Auth: Register
-export const registerUser = (userData) => API.post('/api/auth/register', userData);
+// Auth: Register - hits /api/auth/register
+export const registerUser = (userData) => API.post('/auth/register', userData);
 
-// Auth: Login
-export const loginUser = (credentials) => API.post('/api/auth/login', credentials);
+// Auth: Login - hits /api/auth/login
+export const loginUser = (credentials) => API.post('/auth/login', credentials);
 
 export default API;
