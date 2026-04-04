@@ -1,7 +1,5 @@
-// seed.js
 const mongoose = require('mongoose');
 const Problem = require('./models/Problem');
-require('dotenv').config();
 
 const getTemplates = () => ({
     python: `import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data: return\n    print(input_data[0])\n\nif __name__ == "__main__":\n    solve()`,
@@ -62,10 +60,8 @@ const problemData = [
     { id: 50, title: "Pow(x, n)", diff: "Medium", cat: "Math", acc: "50.0%", desc: "Implement pow(x, n), which calculates x raised to the power n (i.e., x^n).", constraints: ["-100.0 < x < 100.0", "-2^31 <= n <= 2^31-1"], tc: [{ input: "2.00000\n10", exp: "1024.00000" }, { input: "2.10000\n3", exp: "9.26100" }] }
 ];
 
-const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/coding_platform';
-
-mongoose.connect(mongoURI).then(async () => {
-    console.log("Connecting to Database for Seeding...");
+mongoose.connect('mongodb://127.0.0.1:27017/coding_platform').then(async () => {
+    console.log("Updating problems while maintaining ObjectID consistency for Green Dots...");
 
     for (const p of problemData) {
         await Problem.findOneAndUpdate(
@@ -84,7 +80,7 @@ mongoose.connect(mongoURI).then(async () => {
         );
     }
 
-    console.log("✅ Seed complete. All 50 problems synced to the database.");
+    console.log("✅ Seed complete. All 50 problems updated. User progress preserved.");
     process.exit();
 }).catch(err => {
     console.error("Seed error:", err);

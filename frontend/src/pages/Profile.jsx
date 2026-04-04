@@ -2,10 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CertificateModal from '../components/CertificateModal';
 import MilestoneCertificateModal from '../components/MilestoneCertificateModal';
-
-// Update this variable to your Render URL
-const API_BASE_URL = "https://code-master-3.onrender.com";
-
 const Profile = () => {
     const [user, setUser] = useState(null);
     const [solvedCount, setSolvedCount] = useState(0);
@@ -16,7 +12,6 @@ const Profile = () => {
     const [selectedCourseCert, setSelectedCourseCert] = useState({ name: '', id: '' });
     const [isMilestoneCertOpen, setIsMilestoneCertOpen] = useState(false);
     const [selectedMilestone, setSelectedMilestone] = useState({ name: '', id: '', image: '' });
-
     const badgeImages = {
         bronze: "/bronze.png",
         silver: "/silver.png",
@@ -25,17 +20,13 @@ const Profile = () => {
         java: "/java.png",
         c: "/c.png"
     };
-
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                // Updated to Render URL
-                const profileRes = await axios.get(`${API_BASE_URL}/api/user/profile/${userId}`);
+                const profileRes = await axios.get(`http://localhost:5000/api/user/profile/${userId}`);
                 setUser(profileRes.data);
                 setEditData({ name: profileRes.data.name, email: profileRes.data.email });
-
-                // Updated to Render URL
-                const submissionsRes = await axios.get(`${API_BASE_URL}/api/submissions/user/${userId}`);
+                const submissionsRes = await axios.get(`http://localhost:5000/api/submissions/user/${userId}`);
                 const accepted = submissionsRes.data.filter(s => s.status === 'Accepted');
                 const uniqueSolved = [...new Set(accepted.map(s => s.problemId))];
                 setSolvedCount(uniqueSolved.length);
@@ -45,11 +36,9 @@ const Profile = () => {
         };
         if (userId) fetchUserData();
     }, [userId]);
-
     const handleSave = async () => {
         try {
-            // Updated to Render URL
-            await axios.put(`${API_BASE_URL}/api/user/update/${userId}`, editData);
+            await axios.put(`http://localhost:5000/api/user/update/${userId}`, editData);
             setUser({ ...user, name: editData.name, email: editData.email });
             localStorage.setItem('userName', editData.name);
             setIsEditing(false);
@@ -58,7 +47,6 @@ const Profile = () => {
             alert("Failed to update profile");
         }
     };
-
     const openCourseCert = (title) => {
         setSelectedCourseCert({
             name: title,
@@ -66,7 +54,6 @@ const Profile = () => {
         });
         setIsCourseCertOpen(true);
     };
-
     const openMilestoneCert = (label, image) => {
         setSelectedMilestone({
             name: label,
@@ -75,15 +62,12 @@ const Profile = () => {
         });
         setIsMilestoneCertOpen(true);
     };
-
     if (!user) return <div style={{ padding: '50px', color: 'white', background: '#1a1a1a', height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>Loading...</div>;
-
     const milestones = [
         { key: 'bronze', label: 'BRONZE', count: 10, color: '#cd7f32' },
         { key: 'silver', label: 'SILVER', count: 25, color: '#C0C0C0' },
         { key: 'gold', label: 'GOLD', count: 50, color: '#ffa116' }
     ];
-
     return (
         <div style={{ minHeight: '100vh', backgroundColor: '#1a1a1a', width: '100vw', boxSizing: 'border-box', overflowX: 'hidden', paddingBottom: '50px', color: '#fff', fontFamily: "'Inter', sans-serif" }}>
             <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '40px 20px', width: '100%', boxSizing: 'border-box' }}>
