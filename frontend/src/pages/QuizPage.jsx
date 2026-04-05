@@ -24,7 +24,7 @@ python: [
 { q: "What is the command to install libraries?", options: ["npm", "get", "pip", "install"], answer: "pip" },
 { q: "Which of these is NOT a keyword?", options: ["pass", "eval", "assert", "nonlocal"], answer: "eval" },
 { q: "What does 'len()' do?", options: ["Counts words", "Returns length", "Finds letters", "Lowercases"], answer: "Returns length" },
-{ q: "Which module is used for random numbers?", options: ["math", "random", "os", "sys"], answer: "random" }
+{ q: "Which module is used for Random numbers?", options: ["math", "random", "os", "sys"], answer: "random" }
 ],
 java: [
 { q: "Which component is used to compile, debug and execute Java?", options: ["JRE", "JIT", "JDK", "JVM"], answer: "JDK" },
