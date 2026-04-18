@@ -6,7 +6,7 @@ import { BarChart, Bar, XAxis, ResponsiveContainer, Cell, Tooltip } from 'rechar
 
 const API_BASE_URL = window.location.hostname === 'localhost' 
     ? 'http://localhost:5000' 
-    : 'https://your-backend-name.onrender.com';
+    : 'https://code-master-backend-528u.onrender.com';
 
 const fallbacks = {
     python: 'class Solution:\n    def solve(self):\n        import sys\n        input_data = sys.stdin.read().strip()\n        print(input_data)',

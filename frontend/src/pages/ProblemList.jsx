@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const API_BASE_URL = window.location.hostname === 'localhost' 
     ? 'http://localhost:5000' 
-    : 'https://your-backend-name.onrender.com';
+    : 'https://code-master-backend-528u.onrender.com';
 
 const ProblemList = () => {
     const navigate = useNavigate();
