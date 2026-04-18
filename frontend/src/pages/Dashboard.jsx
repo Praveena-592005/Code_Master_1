@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+const API_BASE_URL = window.location.hostname === 'localhost' 
+    ? 'http://localhost:5000' 
+    : 'https://your-backend-name.onrender.com';
+
 const Dashboard = () => {
     const [problems, setProblems] = useState([]);
     const [filteredProblems, setFilteredProblems] = useState([]);
@@ -13,14 +17,14 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const resProbs = await axios.get('http://localhost:5000/api/problems');
+                const resProbs = await axios.get(`${API_BASE_URL}/api/problems`);
                 setProblems(resProbs.data);
                 setFilteredProblems(resProbs.data);
                 
                 const userId = localStorage.getItem('userId');
                 if (userId) {
                     try {
-                        const resSubs = await axios.get(`http://localhost:5000/api/submissions/user/${userId}`);
+                        const resSubs = await axios.get(`${API_BASE_URL}/api/submissions/user/${userId}`);
                         const data = resSubs.data || [];
                         const uniqueAcceptedIds = new Set();
                         data.forEach(sub => {

@@ -41,15 +41,11 @@ router.post('/complete-lesson', async (req, res) => {
     try {
         const { userId, lessonId } = req.body;
         const user = await User.findById(userId);
-        
         if (!user) return res.status(404).json({ error: "User not found" });
-
-        // Force initialize if structure is broken
         if (!user.completedLessons || Array.isArray(user.badges)) {
             user.completedLessons = [];
             user.badges = { bronze: false, silver: false, gold: false };
         }
-
         if (!user.certificates || Array.isArray(user.certificates)) {
             user.certificates = { 
                 pythonMasterclass: false, 
@@ -58,23 +54,18 @@ router.post('/complete-lesson', async (req, res) => {
                 allProblemsComplete: false 
             };
         }
-
         if (!user.completedLessons.includes(lessonId)) {
             user.completedLessons.push(lessonId);
         }
-
         if (lessonId === 'python') user.certificates.pythonMasterclass = true;
         if (lessonId === 'java') user.certificates.javaMastery = true;
         if (lessonId === 'c') user.certificates.cMastery = true;
-
         user.markModified('certificates');
         user.markModified('badges');
         user.markModified('completedLessons');
-
         await user.save();
         res.json({ message: "Certificate awarded successfully", completedLessons: user.completedLessons });
     } catch (err) {
-        console.error("CRITICAL BACKEND ERROR:", err);
         res.status(500).json({ error: err.message });
     }
 });

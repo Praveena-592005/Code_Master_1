@@ -12,7 +12,7 @@ const problemData = [
     { id: 2, title: "Add Two Numbers", diff: "Medium", cat: "Linked List", acc: "41.2%", desc: "You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order.", constraints: ["0 <= Node.val <= 9"], tc: [{ input: "2 4 3\n5 6 4", exp: "[7,0,8]" }, { input: "0\n0", exp: "[0]" }] },
     { id: 3, title: "Longest Substring", diff: "Medium", cat: "Sliding Window", acc: "34.0%", desc: "Find the length of the longest substring without repeating characters.", constraints: ["0 <= s.length <= 5 * 10^4"], tc: [{ input: "abcabcbb", exp: "3" }, { input: "bbbbb", exp: "1" }] },
     { id: 4, title: "Reverse Integer", diff: "Medium", cat: "Math", acc: "28.1%", desc: "Given a signed 32-bit integer x, return x with its digits reversed.", constraints: ["-2^31 <= x <= 2^31 - 1"], tc: [{ input: "123", exp: "321" }, { input: "-123", exp: "-321" }] },
-    { id: 5, title: "Palindrome Number", diff: "Easy", cat: "Math", acc: "55.2%", desc: "Given an integer x, return true if x is a palindrome, and false otherwise.", constraints: ["-2^31 <= x <= 2^31 - 1"], tc: [{ input: "121", exp: "true" }, { input: "-121", exp: "false" }] },
+    { id: 5, title: "Palindrome Number", diff: "Easy", cat: "Math", acc: "55.2%", desc: "Given an integer x, return true if x is a palindrome, and false otherwise.", constraints: ["-2^31 <= x <= 2^31 - 1"], tc: [{ input: "121", exp: "true" }, { input: "-121", exp: "-false" }] },
     { id: 6, title: "ZigZag Conversion", diff: "Medium", cat: "String", acc: "45.0%", desc: "The string 'PAYPALISHIRING' is written in a zigzag pattern on a given number of rows.", constraints: ["1 <= numRows <= 1000"], tc: [{ input: "PAYPALISHIRING\n3", exp: "PAHNAPLSIIGYIR" }, { input: "PAYPALISHIRING\n4", exp: "PINALSIGYAHRPI" }] },
     { id: 7, title: "Median of Two Arrays", diff: "Hard", cat: "Binary Search", acc: "37.5%", desc: "Return the median of the two sorted arrays.", constraints: ["0 <= m, n <= 1000"], tc: [{ input: "1 3\n2", exp: "2.0" }, { input: "1 2\n3 4", exp: "2.5" }] },
     { id: 8, title: "Longest Palindrome", diff: "Medium", cat: "String", acc: "33.1%", desc: "Given a string s, return the longest palindromic substring in s.", constraints: ["1 <= s.length <= 1000"], tc: [{ input: "babad", exp: "bab" }, { input: "cbbd", exp: "bb" }] },
@@ -60,9 +60,10 @@ const problemData = [
     { id: 50, title: "Pow(x, n)", diff: "Medium", cat: "Math", acc: "50.0%", desc: "Implement pow(x, n), which calculates x raised to the power n (i.e., x^n).", constraints: ["-100.0 < x < 100.0", "-2^31 <= n <= 2^31-1"], tc: [{ input: "2.00000\n10", exp: "1024.00000" }, { input: "2.10000\n3", exp: "9.26100" }] }
 ];
 
-mongoose.connect('mongodb://127.0.0.1:27017/coding_platform').then(async () => {
-    console.log("Updating problems while maintaining ObjectID consistency for Green Dots...");
+const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/coding_platform';
 
+mongoose.connect(mongoURI).then(async () => {
+    console.log("Updating problems while maintaining ObjectID consistency for Green Dots...");
     for (const p of problemData) {
         await Problem.findOneAndUpdate(
             { problemId: p.id },
@@ -79,7 +80,6 @@ mongoose.connect('mongodb://127.0.0.1:27017/coding_platform').then(async () => {
             { upsert: true, new: true }
         );
     }
-
     console.log("✅ Seed complete. All 50 problems updated. User progress preserved.");
     process.exit();
 }).catch(err => {

@@ -11,24 +11,24 @@ import QuizPage from './pages/QuizPage';
 import Navbar from './components/Navbar';
 
 function App() {
-return (
-<Router>
-<Navbar />
-<Routes>
-<Route path="/" element={<Home />} />
-<Route path="/problems" element={<ProblemList />} />
-<Route path="/problem/:id" element={<ProblemPage />} />
-<Route path="/learning" element={<Dashboard />} />
-<Route path="/course/:courseId" element={<CoursePage />} />
-<Route path="/quiz/:courseId" element={<QuizPage />} />
-<Route path="/profile" element={<Profile />} />
-<Route path="/badges" element={<Profile />} />
-<Route path="/login" element={<Login />} />
-<Route path="/register" element={<Register />} />
-<Route path="/dashboard" element={<Dashboard />} />
-</Routes>
-</Router>
-);
+  return (
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/problems" element={<ProblemList />} />
+        <Route path="/problem/:id" element={<ProblemPage />} />
+        <Route path="/learning" element={<Dashboard />} />
+        <Route path="/course/:courseId" element={<CoursePage />} />
+        <Route path="/quiz/:courseId" element={<QuizPage />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/badges" element={<Profile />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;

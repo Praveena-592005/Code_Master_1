@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 
+const API_BASE_URL = window.location.hostname === 'localhost' 
+    ? 'http://localhost:5000' 
+    : 'https://your-backend-name.onrender.com';
+
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -11,7 +15,7 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+            const res = await axios.post(`${API_BASE_URL}/api/auth/login`, { email, password });
             localStorage.setItem('userId', res.data.userId);
             localStorage.setItem('userName', res.data.name);
             localStorage.setItem('userEmail', res.data.email);

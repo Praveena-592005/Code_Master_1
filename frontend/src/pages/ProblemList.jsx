@@ -1,7 +1,10 @@
-// frontend/src/components/ProblemList.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+
+const API_BASE_URL = window.location.hostname === 'localhost' 
+    ? 'http://localhost:5000' 
+    : 'https://your-backend-name.onrender.com';
 
 const ProblemList = () => {
     const navigate = useNavigate();
@@ -17,15 +20,16 @@ const ProblemList = () => {
         const fetchData = async () => {
             try {
                 const [probsRes, submissionsRes] = await Promise.all([
-                    axios.get('http://localhost:5000/api/problems'),
-                    userId ? axios.get(`http://localhost:5000/api/submissions/user/${userId}`) : { data: [] }
+                    axios.get(`${API_BASE_URL}/api/problems`),
+                    userId ? axios.get(`${API_BASE_URL}/api/submissions/user/${userId}`) : Promise.resolve({ data: [] })
                 ]);
+
                 const acceptedIds = new Set();
                 if (submissionsRes.data) {
                     submissionsRes.data.forEach(sub => {
                         if (sub.status === 'Accepted') {
                             const pId = sub.problemId?._id || sub.problemId;
-                            acceptedIds.add(String(pId));
+                            if (pId) acceptedIds.add(String(pId));
                         }
                     });
                 }

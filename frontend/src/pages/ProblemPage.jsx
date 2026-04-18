@@ -4,6 +4,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { BarChart, Bar, XAxis, ResponsiveContainer, Cell, Tooltip } from 'recharts';
 
+const API_BASE_URL = window.location.hostname === 'localhost' 
+    ? 'http://localhost:5000' 
+    : 'https://your-backend-name.onrender.com';
+
 const fallbacks = {
     python: 'class Solution:\n    def solve(self):\n        import sys\n        input_data = sys.stdin.read().strip()\n        print(input_data)',
     c: '#include <stdio.h>\n\nint main() {\n    char input[1000];\n    if (scanf("%s", input) != EOF) {\n        printf("%s", input);\n    }\n    return 0;\n}',
@@ -47,7 +51,7 @@ const ProblemPage = () => {
     const fetchHistory = async () => {
         if (!userId) return;
         try {
-            const res = await axios.get(`http://localhost:5000/api/submissions/user/${userId}`);
+            const res = await axios.get(`${API_BASE_URL}/api/submissions/user/${userId}`);
             const history = res.data || [];
             
             const currentProblemSubmissions = history.filter(sub => {
@@ -73,8 +77,8 @@ const ProblemPage = () => {
         const loadData = async () => {
             try {
                 const [probRes, allProbsRes] = await Promise.all([
-                    axios.get(`http://localhost:5000/api/problems/${id}`),
-                    axios.get(`http://localhost:5000/api/problems`)
+                    axios.get(`${API_BASE_URL}/api/problems/${id}`),
+                    axios.get(`${API_BASE_URL}/api/problems`)
                 ]);
                 if (probRes.data) {
                     setProblem(probRes.data);
@@ -132,7 +136,7 @@ const ProblemPage = () => {
         setActualOutput("");
         setConsoleTab("result");
         try {
-            const res = await axios.post('http://localhost:5000/api/execute', { 
+            const res = await axios.post(`${API_BASE_URL}/api/execute`, { 
                 script: userCode, 
                 language: language,
                 problemId: id,
@@ -235,7 +239,6 @@ const ProblemPage = () => {
                             </button>
                         </div>
                     </div>
-
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                     <select value={language} onChange={handleLanguageChange} style={{ padding: '6px 12px', borderRadius: '6px', background: '#262626', color: '#ddd', border: '1px solid #333', fontSize: '13px', outline: 'none', cursor: 'pointer' }}>
