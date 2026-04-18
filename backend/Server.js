@@ -15,7 +15,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/coding_platform';
+const mongoURI = process.env.MONGO_URI || 'mongodb+srv://23csec18praveenathirumalai_db_user:njKVzpXiwo9VHWwE@cluster0.tinclas.mongodb.net/test?retryWrites=true&w=majority&appName=Cluster0';
 
 mongoose.connect(mongoURI)
 .then(() => console.log("MongoDB Connected"))
